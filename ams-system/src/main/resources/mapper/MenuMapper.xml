@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aisino.modules.system.mapper.MenuMapper">
+
+  <!-- 通用查询结果列 -->
+  <!--
+  <sql id="Base_Column_List">
+      menu_id, pid, sub_count, type, title, name, component, menu_sort, icon, path, i_frame, cache, hidden, permission, create_by, update_by, create_time, update_time
+  </sql>
+  -->
+
+    <!--通过角色ID获取菜单-->
+    <select id="selectLink" resultType="com.aisino.modules.system.entity.Menu">
+        SELECT
+            m.menu_id AS id,
+            m.*
+        FROM
+            sys_roles_menus rm
+            INNER JOIN sys_menu m ON rm.menu_id = m.menu_id
+        WHERE
+            rm.role_id = #{roleId}
+    </select>
+
+    <!--通过多个角色ID获取菜单-->
+    <select id="selectByRoleIds" resultType="com.aisino.modules.system.entity.Menu">
+        SELECT
+            m.menu_id AS id,
+            m.*
+        FROM
+            sys_roles_menus rm
+        INNER JOIN
+            sys_menu m ON rm.menu_id = m.menu_id
+        WHERE
+            rm.role_id IN
+        <foreach item = 'item' index = 'index' collection = 'roleIds' open = '(' separator = ',' close = ')' > #{item} </foreach>
+    </select>
+
+    <!--查询菜单的所有节点-->
+    <select id="getFullPidByMenuId" resultType="java.lang.Long">
+        SELECT
+            T2.menu_id
+        FROM
+          (
+            SELECT
+              @r AS _id,
+              ( SELECT @r := pid FROM sys_menu WHERE menu_id = _id ) AS parent_id,
+              @l := @l + 1 AS lvl
+            FROM
+                ( SELECT @r := #{menuId}, @l := 0 ) vars,
+                sys_menu h
+          ) T1
+        JOIN sys_menu T2 ON T1._id = T2.menu_id
+        WHERE ((T2.permission IS NOT NULL AND T2.type = '2') OR T2.type = '1')
+        ORDER BY
+            T1.lvl DESC
+    </select>
+
+    <!--查询菜单的所有上级菜单-->
+    <select id="getFullMenuByMenuId" resultType="com.aisino.modules.system.entity.Menu">
+        SELECT
+            T2.menu_id as id,
+            T2.*
+        FROM
+          (
+            SELECT
+              @r AS _id,
+              ( SELECT @r := pid FROM sys_menu WHERE menu_id = _id ) AS parent_id,
+              @l := @l + 1 AS lvl
+            FROM
+                ( SELECT @r := #{menuId}, @l := 0 ) vars,
+                sys_menu h
+          ) T1
+        JOIN sys_menu T2 ON T1._id = T2.menu_id
+        WHERE T2.type &lt;&gt; '2'
+        ORDER BY
+            T1.lvl DESC
+    </select>
+
+    <!--查询最简单的菜单树-->
+    <select id="selectMenuTrees" resultType="com.aisino.modules.system.entity.vo.MenuTreeVo">
+        select menu_id as id, pid, title as label from sys_menu
+    </select>
+
+    <!--查询角色的最下级菜单-->
+    <select id="getLowerMenus" resultType="com.aisino.modules.system.entity.vo.MenuTreeVo">
+        SELECT
+            t1.menu_id AS id,
+            t1.title AS label,
+            t1.pid
+        FROM
+            sys_menu t1
+            LEFT JOIN sys_roles_menus t2 ON t1.menu_id = t2.menu_id
+        WHERE
+            t2.role_id = #{roleId}
+    </select>
+</mapper>
