@@ -1,5 +1,6 @@
 package com.aisino.modules.system.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -67,6 +68,9 @@ public class User extends BaseDataEntity implements Serializable {
 
     @ApiModelProperty(value = "修改密码的时间")
     private Date pwdResetTime;
+
+    @TableField(exist = false)
+    private String verifyCode;
 
     public <T> void copyFrom(T source){
         BeanUtil.copyProperties(source,this, CopyOptions.create().setIgnoreNullValue(true));

@@ -9,6 +9,7 @@ import com.aisino.modules.system.service.UsersJobsService;
 import com.aisino.modules.system.service.UsersRolesService;
 import com.aisino.modules.system.service.dto.UserDtoBase;
 import com.aisino.utils.*;
+import com.aisino.utils.enums.CodeEnum;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -328,6 +329,7 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
      */
     @Override
     public void registerUser(User user) {
+        checkVerifyCode(user.getVerifyCode(), user.getEmail());
         userMapper.insert(user);
     }
 
@@ -349,5 +351,20 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
      */
     private void flushCache(String username) {
         userCacheClean.cleanUserCache(username);
+    }
+
+    /**
+     * @Author raoxingxing
+     * @Description 查询验证码是否正常
+     * @Date 2021/2/7 22:19
+     * @Param [verifyCode]
+     * @return
+    **/
+    private void checkVerifyCode(String verifyCode, String email) {
+        String key = email + CodeEnum.REGISTER_EMAIL_CODE;
+        Object codeObj = redisUtils.get(key);
+        if (codeObj == null || !verifyCode.equals(codeObj.toString())){
+            throw new BadRequestException("验证码错误");
+        }
     }
 }

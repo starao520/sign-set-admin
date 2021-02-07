@@ -34,6 +34,8 @@ public enum CodeEnum {
 
     /* 通过旧邮箱重置邮箱 */
     EMAIL_RESET_EMAIL_CODE("email_reset_email_code_", "通过旧邮箱重置邮箱"),
+    /*  注册邮件验证  */
+    REGISTER_EMAIL_CODE("register_email_code", "注册邮件验证"),
 
     /* 通过手机号码重置密码 */
     PHONE_RESET_PWD_CODE("phone_reset_pwd_code_", "通过手机号码重置密码"),

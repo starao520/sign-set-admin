@@ -15,6 +15,10 @@
  */
 package com.aisino.modules.system.controller;
 
+import com.aisino.annotation.rest.AnonymousPostMapping;
+import com.aisino.exception.BadRequestException;
+import com.aisino.modules.system.entity.User;
+import com.aisino.modules.system.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +44,7 @@ public class VerifyController {
 
     private final VerifyService verificationCodeService;
     private final EmailService emailService;
+    private final UserService userService;
 
     @PostMapping(value = "/resetEmail")
     @ApiOperation("重置邮箱，发送验证码")
@@ -53,6 +58,15 @@ public class VerifyController {
     @ApiOperation("重置密码，发送验证码")
     public ResponseEntity<Object> resetPass(@RequestParam String email){
         EmailVo emailVo = verificationCodeService.sendEmail(email, CodeEnum.EMAIL_RESET_PWD_CODE.getKey());
+        emailService.send(emailVo,emailService.find());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @AnonymousPostMapping(value = "/email/registerUser")
+    @ApiOperation("注册，发送验证码")
+    public ResponseEntity<Object> registerUser(@RequestParam String email){
+        checkEmail(email);
+        EmailVo emailVo = verificationCodeService.sendEmail(email, CodeEnum.REGISTER_EMAIL_CODE.getKey());
         emailService.send(emailVo,emailService.find());
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -72,5 +86,12 @@ public class VerifyController {
                 break;
         }
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private void checkEmail(String email) {
+        User user = userService.findByEmail(email);
+        if (user != null){
+            throw new BadRequestException("邮件已注册");
+        }
     }
 }

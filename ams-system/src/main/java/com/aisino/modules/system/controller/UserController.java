@@ -89,8 +89,10 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @Log("用户注册")
+    @ApiOperation("用户注册")
+    @PostMapping("/register")
     public ResponseEntity<Object> registerUser(@RequestBody User user){
-        checkEmail(user.getEmail());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.registerUser(user);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -178,13 +180,6 @@ public class UserController {
         Integer optLevel = roleService.findByRoles(resources.getRoles().stream().map(RoleSmallDto::getId).collect(Collectors.toSet()));
         if (currentLevel > optLevel) {
             throw new BadRequestException("角色权限不足");
-        }
-    }
-
-    private void checkEmail(String email) {
-        User user = userService.findByEmail(email);
-        if (user != null){
-            throw new BadRequestException("邮件已注册");
         }
     }
 }
