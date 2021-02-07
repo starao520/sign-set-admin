@@ -15,6 +15,7 @@
  */
 package com.aisino.modules.system.controller;
 
+import com.aisino.annotation.rest.AnonymousGetMapping;
 import com.aisino.annotation.rest.AnonymousPostMapping;
 import com.aisino.exception.BadRequestException;
 import com.aisino.modules.system.entity.User;
@@ -62,9 +63,9 @@ public class VerifyController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @AnonymousPostMapping(value = "/email/registerUser")
+    @AnonymousGetMapping(value = "/email/registerUser")
     @ApiOperation("注册，发送验证码")
-    public ResponseEntity<Object> registerUser(@RequestParam String email){
+    public ResponseEntity<Object> registerUser(String email){
         checkEmail(email);
         EmailVo emailVo = verificationCodeService.sendEmail(email, CodeEnum.REGISTER_EMAIL_CODE.getKey());
         emailService.send(emailVo,emailService.find());
@@ -91,7 +92,7 @@ public class VerifyController {
     private void checkEmail(String email) {
         User user = userService.findByEmail(email);
         if (user != null){
-            throw new BadRequestException("邮件已注册");
+            throw new BadRequestException("邮件已注册,请重新输入");
         }
     }
 }
