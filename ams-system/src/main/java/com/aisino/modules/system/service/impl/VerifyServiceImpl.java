@@ -64,7 +64,7 @@ public class VerifyServiceImpl implements VerifyService {
         } else {
             content = template.render(Dict.create().set("code",oldCode));
         }
-        emailVo = new EmailVo(Collections.singletonList(email),"EL-ADMIN后台管理系统",content);
+        emailVo = new EmailVo(Collections.singletonList(email),"签集后台管理系统",content);
         return emailVo;
     }
 

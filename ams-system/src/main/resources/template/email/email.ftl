@@ -15,10 +15,9 @@
 <div style="height: auto;
 			width: 820px;
 			min-width: 820px;
-			margin: 0 auto;
-			margin-top: 20px;
+			margin: 20px auto 0;
             border: 1px solid #eee;">
-    <div style="padding: 10px;padding-bottom: 0px;">
+    <div style="padding: 10px 10px 0px;">
         <p style="margin-bottom: 10px;padding-bottom: 0px;">尊敬的用户，您好：</p>
         <p style="text-indent: 2em; margin-bottom: 10px;">您正在申请邮箱验证，您的验证码为：</p>
         <p style="text-align: center;
@@ -39,7 +38,7 @@
 			font-size: 12px;
 			padding: 20px 0px;
 			font-family: Microsoft YaHei;">
-            Copyright &copy;${.now?string("yyyy")} <a hover="color: #DA251D;" style="color: #999;" href="https://github.com/elunez/ams" target="_blank">EL-ADMIN</a> 后台管理系统 All Rights Reserved.
+            Copyright &copy;${.now?string("yyyy")} <a hover="color: #DA251D;" style="color: #999;" href="https://bookmark.facebook47.cn" target="_blank">签集</a> 后台管理系统 All Rights Reserved.
         </div>
 
     </div>
