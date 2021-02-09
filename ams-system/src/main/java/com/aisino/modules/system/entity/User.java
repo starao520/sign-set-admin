@@ -30,9 +30,6 @@ public class User extends BaseDataEntity implements Serializable {
     @NotNull(groups = Update.class)
     private Long id;
 
-//    @ApiModelProperty(value = "部门名称")
-//    private Long deptId;
-
     @ApiModelProperty(value = "用户名")
     @NotBlank
     private String username;

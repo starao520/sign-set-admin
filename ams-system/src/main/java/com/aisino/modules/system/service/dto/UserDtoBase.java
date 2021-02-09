@@ -23,12 +23,6 @@ public class UserDtoBase extends BaseDataDto implements Serializable {
 
     private Set<RoleSmallDto> roles;
 
-//    private Set<JobSmallDto> jobs;
-
-//    private DeptSmallDto dept;
-
-//    private Long deptId;
-
     private String username;
 
     private String nickName;

@@ -334,6 +334,23 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
     }
 
     /**
+     * @param username
+     * @return
+     * @Author raoxingxing
+     * @Description 通过用户名或邮箱查询用户
+     * @Date 2021/2/9 23:10
+     * @Param [username]
+     */
+    @Override
+    public User findByNameOrEmail(String username) {
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("username", username);
+        wrapper.or();
+        wrapper.eq("email", username);
+        return userMapper.selectOne(wrapper);
+    }
+
+    /**
      * 清理缓存
      *
      * @param id /
@@ -361,7 +378,7 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
      * @return
     **/
     private void checkVerifyCode(String verifyCode, String email) {
-        String key = email + CodeEnum.REGISTER_EMAIL_CODE;
+        String key = CodeEnum.REGISTER_EMAIL_CODE.getKey() + email;
         Object codeObj = redisUtils.get(key);
         if (codeObj == null || !verifyCode.equals(codeObj.toString())){
             throw new BadRequestException("验证码错误");

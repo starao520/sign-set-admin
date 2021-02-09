@@ -17,6 +17,8 @@ package com.aisino.modules.security.controller;
 
 import cn.hutool.core.util.IdUtil;
 import com.aisino.annotation.Log;
+import com.aisino.modules.system.entity.User;
+import com.aisino.modules.system.service.UserService;
 import com.aisino.utils.*;
 import com.wf.captcha.base.Captcha;
 import io.swagger.annotations.Api;
@@ -65,6 +67,7 @@ public class AuthorizationController {
     private final OnlineUserService onlineUserService;
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final UserService userService;
     @Resource
     private LoginProperties loginProperties;
 
@@ -87,9 +90,14 @@ public class AuthorizationController {
                 throw new BadRequestException("验证码错误");
             }
         }
+        //  添加邮箱登录方式
+        User user = userService.findByNameOrEmail(authUser.getUsername());
+        if (user == null || user.getUsername() == null){
+            throw new BadRequestException("用户名或密码错误");
+        }
 
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(authUser.getUsername(), password);
+                new UsernamePasswordAuthenticationToken(user.getUsername(), password);
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         // 生成令牌

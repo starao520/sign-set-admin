@@ -100,4 +100,13 @@ public interface UserService  extends BaseService<User> {
      * @param user
      */
     void registerUser(User user);
+
+    /**
+     * @Author raoxingxing
+     * @Description 通过用户名或邮箱查询用户
+     * @Date 2021/2/9 23:10
+     * @Param [username]
+     * @return
+    **/
+    User findByNameOrEmail(String username);
 }

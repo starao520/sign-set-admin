@@ -15,6 +15,7 @@
  */
 package com.aisino.modules.system.controller;
 
+import com.aisino.annotation.rest.AnonymousPostMapping;
 import com.aisino.modules.system.service.dto.UserDtoBase;
 import com.aisino.utils.PageUtil;
 import com.aisino.utils.RsaUtils;
@@ -91,11 +92,11 @@ public class UserController {
 
     @Log("用户注册")
     @ApiOperation("用户注册")
-    @PostMapping("/register")
+    @AnonymousPostMapping("/register")
     public ResponseEntity<Object> registerUser(@RequestBody User user){
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.registerUser(user);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Log("修改用户")
