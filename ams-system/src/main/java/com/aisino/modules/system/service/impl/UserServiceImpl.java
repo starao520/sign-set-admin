@@ -330,6 +330,8 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
     @Override
     public void registerUser(User user) {
         checkVerifyCode(user.getVerifyCode(), user.getEmail());
+        checkEmail(user.getEmail());
+        checkUsername(user.getUsername());
         userMapper.insert(user);
     }
 
@@ -382,6 +384,34 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
         Object codeObj = redisUtils.get(key);
         if (codeObj == null || !verifyCode.equals(codeObj.toString())){
             throw new BadRequestException("验证码错误");
+        }
+    }
+
+    /**
+     * @Author raoxingxing
+     * @Description 校验邮箱是否已被注册
+     * @Date 2021/2/10 01:42
+     * @Param [email]
+     * @return
+    **/
+    private void checkEmail(String email){
+        User user = findByEmail(email);
+        if (user != null){
+            throw new BadRequestException("邮箱已被注册");
+        }
+    }
+
+    /**
+     * @Author raoxingxing
+     * @Description 校验用户名是否可用
+     * @Date 2021/2/10 01:43
+     * @Param [username]
+     * @return
+    **/
+    private void checkUsername(String username){
+        UserDtoBase user = findByName(username);
+        if (user != null){
+            throw new BadRequestException("用户名已存在");
         }
     }
 }
