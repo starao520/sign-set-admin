@@ -132,6 +132,7 @@ public class QiNiuServiceImpl extends BaseServiceImpl<QiniuContent> implements Q
                 qiniuContent.setName(FileUtil.getFileNameNoEx(putRet.key));
                 qiniuContent.setUrl(qiniuConfig.getHost()+"/"+putRet.key);
                 qiniuContent.setSize(FileUtil.getSize(Integer.parseInt(file.getSize()+"")));
+                qiniuContent.setCreateUserId(SecurityUtils.getCurrentUserId());
                 qiniuContentRepository.insert(qiniuContent);
                 return qiniuContent;
             }

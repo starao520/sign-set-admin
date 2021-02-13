@@ -55,6 +55,10 @@ public class QiniuContent implements Serializable {
     @ApiModelProperty(value = "文件后缀")
     private String suffix;
 
+    @ApiModelProperty(value = "上传者ID")
+    @TableField(value = "create_user_id")
+    private Long createUserId;
+
     @ApiModelProperty(value = "点赞次数")
     @TableField(value = "praise_count")
     private Long praiseCount;
@@ -62,6 +66,9 @@ public class QiniuContent implements Serializable {
     @ApiModelProperty(value = "收藏次数")
     @TableField(value = "collect_count")
     private Long collectCount;
+
+    @ApiModelProperty(value = "作用域(1.书签 2.头像)")
+    private String scope;
 
     @ApiModelProperty(value = "上传或同步的时间")
     @TableField(fill= FieldFill.INSERT_UPDATE)

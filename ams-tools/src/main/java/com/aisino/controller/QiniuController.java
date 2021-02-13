@@ -16,6 +16,7 @@
 package com.aisino.controller;
 
 import com.aisino.annotation.rest.AnonymousGetMapping;
+import com.aisino.utils.SecurityUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

@@ -109,4 +109,12 @@ public interface UserService  extends BaseService<User> {
      * @return
     **/
     User findByNameOrEmail(String username);
+
+    /**
+     * @Author raoxingxing
+     * @Description 修改个人信息
+     * @Date 2021/2/13 16:13
+     * @Param [user]
+    **/
+    void updateUserInfo(User user);
 }

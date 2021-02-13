@@ -2,12 +2,14 @@ package com.aisino.modules.system.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.aisino.entity.QiniuContent;
 import com.aisino.modules.system.entity.User;
 import com.aisino.modules.system.entity.UsersRoles;
 import com.aisino.modules.system.service.UserService;
 import com.aisino.modules.system.service.UsersJobsService;
 import com.aisino.modules.system.service.UsersRolesService;
 import com.aisino.modules.system.service.dto.UserDtoBase;
+import com.aisino.service.QiNiuService;
 import com.aisino.utils.*;
 import com.aisino.utils.enums.CodeEnum;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
@@ -61,9 +63,9 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
 
     private final UserMapper userMapper;
     private final UsersRolesService usersRolesService;
-    private final UsersJobsService usersJobsService;
     private final UsersRolesMapper usersRolesMapper;
-    private final UsersJobsMapper usersJobsMapper;
+
+    private final QiNiuService qiNiuService;
 
     @Override
     public PageInfo<UserDtoBase> queryAll(UserQueryParam query, Pageable pageable) {
@@ -216,22 +218,38 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Map<String, String> updateAvatar(MultipartFile multipartFile) {
-        User user = getByUsername(SecurityUtils.getCurrentUsername());
-        String oldPath = user.getAvatarPath();
-        File file = FileUtil.upload(multipartFile, properties.getPath().getAvatar());
-        user.setAvatarName(file.getName());
-        user.setAvatarPath(Objects.requireNonNull(file).getPath());
-        userMapper.updateById(user);
-        if (StrUtil.isNotBlank(oldPath)) {
-            FileUtil.del(oldPath);
-        }
-        redisUtils.del("user::username:" + user.getUsername());
-        return new HashMap<String, String>() {
-            {
-                put("avatar", file.getName());
+        try {
+            User user = getByUsername(SecurityUtils.getCurrentUsername());
+            //  首页将文件上传到七牛云
+            QiniuContent content = qiNiuService.upload(multipartFile, qiNiuService.find());
+
+            //  将返回的路径保存到个人信息
+            if (content != null){
+                user.setAvatarPath(content.getUrl());
+                userMapper.updateById(user);
             }
-        };
+            return new HashMap<String, String>(1) {
+                { put("avatar", user.getAvatarPath()); }
+            };
+        }catch (BadRequestException e){
+            throw new BadRequestException("修改头像失败");
+        }
+//        String oldPath = user.getAvatarPath();
+//        File file = FileUtil.upload(multipartFile, properties.getPath().getAvatar());
+//        user.setAvatarName(file.getName());
+//        user.setAvatarPath(Objects.requireNonNull(file).getPath());
+//        userMapper.updateById(user);
+//        if (StrUtil.isNotBlank(oldPath)) {
+//            FileUtil.del(oldPath);
+//        }
+//        redisUtils.del("user::username:" + user.getUsername());
+//        return new HashMap<String, String>() {
+//            {
+//                put("avatar", file.getName());
+//            }
+//        };
     }
 
     @Override
@@ -350,6 +368,33 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
         wrapper.or();
         wrapper.eq("email", username);
         return userMapper.selectOne(wrapper);
+    }
+
+    /**
+     * @param user
+     * @return
+     * @Author raoxingxing
+     * @Description 修改个人信息
+     * @Date 2021/2/13 16:12
+     * @Param [user]
+     */
+    @Override
+    public void updateUserInfo(User user) {
+        try {
+            User user1 = userMapper.selectById(SecurityUtils.getCurrentUserId());
+            if (StringUtils.isNotBlank(user.getNickName())){
+                user1.setNickName(user.getNickName());
+            }
+            if (StringUtils.isNotBlank(user.getPhone())){
+                user1.setPhone(user.getPhone());
+            }
+            if (StringUtils.isNotBlank(user.getGender())){
+                user1.setGender(user.getGender());
+            }
+            userMapper.updateById(user1);
+        }catch (BadRequestException e){
+            throw new BadRequestException("修改个人信息失败");
+        }
     }
 
     /**

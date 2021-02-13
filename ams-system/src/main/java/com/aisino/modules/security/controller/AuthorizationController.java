@@ -104,6 +104,7 @@ public class AuthorizationController {
         String token = tokenProvider.createToken(authentication);
         final JwtUserDto jwtUserDto = (JwtUserDto) authentication.getPrincipal();
         // 保存在线信息
+        jwtUserDto.getUser().setAvatarPath(user.getAvatarPath());
         onlineUserService.save(jwtUserDto, token, request);
         // 返回 token 与 用户信息
         Map<String, Object> authInfo = new HashMap<String, Object>(2) {{
