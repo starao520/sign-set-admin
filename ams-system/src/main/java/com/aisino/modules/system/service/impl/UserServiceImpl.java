@@ -222,6 +222,7 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
     public Map<String, String> updateAvatar(MultipartFile multipartFile) {
         try {
             User user = getByUsername(SecurityUtils.getCurrentUsername());
+            String oldUrl = user.getAvatarPath();
             //  首页将文件上传到七牛云
             QiniuContent content = qiNiuService.upload(multipartFile, qiNiuService.find(), "2");
 
@@ -230,26 +231,16 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
                 user.setAvatarPath(content.getUrl());
                 userMapper.updateById(user);
             }
+            //  删除原文件
+            if (StringUtils.isNotBlank(oldUrl)){
+                qiNiuService.delete(qiNiuService.findByContentUrl(oldUrl), qiNiuService.find());
+            }
             return new HashMap<String, String>(1) {
                 { put("avatar", user.getAvatarPath()); }
             };
         }catch (BadRequestException e){
             throw new BadRequestException("修改头像失败");
         }
-//        String oldPath = user.getAvatarPath();
-//        File file = FileUtil.upload(multipartFile, properties.getPath().getAvatar());
-//        user.setAvatarName(file.getName());
-//        user.setAvatarPath(Objects.requireNonNull(file).getPath());
-//        userMapper.updateById(user);
-//        if (StrUtil.isNotBlank(oldPath)) {
-//            FileUtil.del(oldPath);
-//        }
-//        redisUtils.del("user::username:" + user.getUsername());
-//        return new HashMap<String, String>() {
-//            {
-//                put("avatar", file.getName());
-//            }
-//        };
     }
 
     @Override

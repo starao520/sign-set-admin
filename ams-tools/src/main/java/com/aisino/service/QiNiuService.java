@@ -71,6 +71,15 @@ public interface QiNiuService extends BaseService<QiniuContent> {
      * @return QiniuContent
      */
     QiniuContent upload(MultipartFile file, QiniuConfig qiniuConfig, String scope);
+    
+    /**
+     * @Author raoxingxing
+     * @Description 通过url查询文件对象
+     * @Date 2021/2/14 23:29
+     * @Param [url]
+     * @return 
+    **/
+    QiniuContent findByContentUrl(String url);
 
     /**
      * 查询文件

@@ -103,8 +103,9 @@ public class AuthorizationController {
         // 生成令牌
         String token = tokenProvider.createToken(authentication);
         final JwtUserDto jwtUserDto = (JwtUserDto) authentication.getPrincipal();
-        // 保存在线信息
+        //  返回头像信息
         jwtUserDto.getUser().setAvatarPath(user.getAvatarPath());
+        // 保存在线信息
         onlineUserService.save(jwtUserDto, token, request);
         // 返回 token 与 用户信息
         Map<String, Object> authInfo = new HashMap<String, Object>(2) {{

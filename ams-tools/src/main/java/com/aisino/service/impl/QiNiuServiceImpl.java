@@ -143,6 +143,25 @@ public class QiNiuServiceImpl extends BaseServiceImpl<QiniuContent> implements Q
         }
     }
 
+    /**
+     * @param url
+     * @return
+     * @Author raoxingxing
+     * @Description 通过url查询文件对象
+     * @Date 2021/2/14 23:22
+     * @Param [url]
+     */
+    @Override
+    public QiniuContent findByContentUrl(String url) {
+        try {
+            QueryWrapper<QiniuContent> wrapper = new QueryWrapper<>();
+            wrapper.eq("url", url);
+            return qiniuContentRepository.selectOne(wrapper);
+        }catch (BadRequestException e){
+            throw new BadRequestException("查询文件失败");
+        }
+    }
+
     @Override
     public QiniuContent findByContentId(Long id) {
         return qiniuContentRepository.selectById(id);
