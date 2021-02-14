@@ -104,7 +104,7 @@ public class QiniuController {
     @ApiOperation("上传文件")
     @PostMapping
     public ResponseEntity<Object> upload(@RequestParam MultipartFile file){
-        QiniuContent qiniuContent = qiNiuService.upload(file,qiNiuService.find());
+        QiniuContent qiniuContent = qiNiuService.upload(file,qiNiuService.find(), "1");
         Map<String,Object> map = new HashMap<>(3);
         map.put("id",qiniuContent.getId());
         map.put("errno",0);

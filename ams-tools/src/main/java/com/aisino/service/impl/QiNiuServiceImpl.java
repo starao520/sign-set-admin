@@ -99,7 +99,7 @@ public class QiNiuServiceImpl extends BaseServiceImpl<QiniuContent> implements Q
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public QiniuContent upload(MultipartFile file, QiniuConfig qiniuConfig) {
+    public QiniuContent upload(MultipartFile file, QiniuConfig qiniuConfig, String scope) {
         FileUtil.checkSize(maxSize, file.getSize());
         if(qiniuConfig.getId() == null){
             throw new BadRequestException("请先添加相应配置，再操作");
@@ -133,6 +133,7 @@ public class QiNiuServiceImpl extends BaseServiceImpl<QiniuContent> implements Q
                 qiniuContent.setUrl(qiniuConfig.getHost()+"/"+putRet.key);
                 qiniuContent.setSize(FileUtil.getSize(Integer.parseInt(file.getSize()+"")));
                 qiniuContent.setCreateUserId(SecurityUtils.getCurrentUserId());
+                qiniuContent.setScope(scope);
                 qiniuContentRepository.insert(qiniuContent);
                 return qiniuContent;
             }

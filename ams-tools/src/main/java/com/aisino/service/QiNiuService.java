@@ -67,9 +67,10 @@ public interface QiNiuService extends BaseService<QiniuContent> {
      * 上传文件
      * @param file 文件
      * @param qiniuConfig 配置
+     * @param scope 作用域
      * @return QiniuContent
      */
-    QiniuContent upload(MultipartFile file, QiniuConfig qiniuConfig);
+    QiniuContent upload(MultipartFile file, QiniuConfig qiniuConfig, String scope);
 
     /**
      * 查询文件
