@@ -95,7 +95,21 @@ public class QiniuController {
 
     @Log("访客查询最爱文件")
     @ApiOperation("访客查询最爱文件")
-    @AnonymousGetMapping(value = "/collect")
+    @AnonymousGetMapping(value = "/favorite")
+    public ResponseEntity<Object> queryFavoriteList(Pageable pageable){
+        return new ResponseEntity<>(qiNiuService.queryFavoriteList(pageable), HttpStatus.OK);
+    }
+
+    @Log("查询交集列表")
+    @ApiOperation("查询交集列表")
+    @GetMapping(value = "/attention")
+    public ResponseEntity<Object> queryAttentionList(Pageable pageable){
+        return new ResponseEntity<>(qiNiuService.queryAttentionList(pageable), HttpStatus.OK);
+    }
+
+    @Log("查询收集列表")
+    @ApiOperation("查询收集列表")
+    @GetMapping(value = "/collect")
     public ResponseEntity<Object> queryCollectList(Pageable pageable){
         return new ResponseEntity<>(qiNiuService.queryCollectList(pageable), HttpStatus.OK);
     }

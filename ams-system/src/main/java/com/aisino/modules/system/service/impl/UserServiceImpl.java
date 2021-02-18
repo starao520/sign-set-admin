@@ -223,7 +223,7 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
         try {
             User user = getByUsername(SecurityUtils.getCurrentUsername());
             String oldUrl = user.getAvatarPath();
-            //  首页将文件上传到七牛云
+            //  首先将文件上传到七牛云
             QiniuContent content = qiNiuService.upload(multipartFile, qiNiuService.find(), "2");
 
             //  将返回的路径保存到个人信息

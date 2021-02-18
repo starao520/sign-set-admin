@@ -50,4 +50,22 @@ public interface QiniuContentMapper extends CommonMapper<QiniuContent> {
      * @param fileId
      */
     void subPraiseCount(Long fileId);
+
+    /**
+     * @Author raoxingxing
+     * @Description 查询交集列表
+     * @Date 2021/2/18 10:08
+     * @Param [page, currentUserId]
+     * @return
+    **/
+    IPage<FIleListDto> queryAttentionList(Page<QiniuContent> page, Long userId);
+
+    /**
+     * @Author raoxingxing
+     * @Description 查询收集列表
+     * @Date 2021/2/18 10:13
+     * @Param [page, currentUserId]
+     * @return
+    **/
+    IPage<FIleListDto> queryCollectList(Page<QiniuContent> page, Long userId);
 }

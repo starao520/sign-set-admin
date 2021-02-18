@@ -297,9 +297,39 @@ public class QiNiuServiceImpl extends BaseServiceImpl<QiniuContent> implements Q
      * @return
      */
     @Override
-    public IPage<FIleListDto> queryCollectList(Pageable pageable) {
+    public IPage<FIleListDto> queryFavoriteList(Pageable pageable) {
 
         return query(pageable, "collect_count");
+    }
+
+    /**
+     * @param pageable
+     * @return
+     * @Author raoxingxing
+     * @Description 查询交集文件列表
+     * @Date 2021/2/14 23:58
+     * @Param [pageable]
+     */
+    @Override
+    public IPage<FIleListDto> queryAttentionList(Pageable pageable) {
+        Page<QiniuContent> page = getPage(pageable);
+        IPage<FIleListDto> pageList = qiniuContentRepository.queryAttentionList(page, SecurityUtils.getCurrentUserId());
+        return pageList;
+    }
+
+    /**
+     * @param pageable
+     * @return
+     * @Author raoxingxing
+     * @Description 查询收集文件列表
+     * @Date 2021/2/15 00:03
+     * @Param [pageable]
+     */
+    @Override
+    public IPage<FIleListDto> queryCollectList(Pageable pageable) {
+        Page<QiniuContent> page = getPage(pageable);
+        IPage<FIleListDto> pageList = qiniuContentRepository.queryCollectList(page, SecurityUtils.getCurrentUserId());
+        return pageList;
     }
 
     /**
@@ -309,10 +339,15 @@ public class QiNiuServiceImpl extends BaseServiceImpl<QiniuContent> implements Q
      * @return
      */
     private IPage<FIleListDto> query(Pageable pageable, String sort) {
+        Page<QiniuContent> page = getPage(pageable);
+        IPage<FIleListDto> pageList = qiniuContentRepository.queryFileListByPage(page, sort, SecurityUtils.getCurrentUserId());
+        return pageList;
+    }
+
+    private Page<QiniuContent> getPage(Pageable pageable){
         Page<QiniuContent> page = new Page<>();
         page.setSize(pageable.getPageSize());
         page.setCurrent(pageable.getPageNumber());
-        IPage<FIleListDto> pageList = qiniuContentRepository.queryFileListByPage(page, sort, SecurityUtils.getCurrentUserId());
-        return pageList;
+        return page;
     }
 }

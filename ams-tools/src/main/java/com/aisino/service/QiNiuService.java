@@ -149,5 +149,23 @@ public interface QiNiuService extends BaseService<QiniuContent> {
      * @param pageable
      * @return
      */
-    IPage<FIleListDto> queryCollectList(Pageable pageable);
+    IPage<FIleListDto> queryFavoriteList(Pageable pageable);
+
+    /**
+     * @Author raoxingxing
+     * @Description 查询交集文件列表
+     * @Date 2021/2/14 23:58
+     * @Param [pageable]
+     * @return
+    **/
+    Object queryAttentionList(Pageable pageable);
+
+    /**
+     * @Author raoxingxing
+     * @Description 查询收集文件列表
+     * @Date 2021/2/16 22:44
+     * @Param [pageable]
+     * @return 
+    **/
+    Object queryCollectList(Pageable pageable);
 }
